@@ -36,7 +36,7 @@ function App() {
       setSelectedFiles([]);
       setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 0);
+      }, 10);
     }, 4000);
   }, []);
 
@@ -107,8 +107,6 @@ function App() {
       entry.report_type_and_page,
     ]),
   ];
-
-  console.log(detailsCsvData);
 
   return (
     <Main>
