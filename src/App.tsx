@@ -9,7 +9,7 @@ import { MOCK_DATA, State } from "./consts";
 import { CSVLink } from "react-csv";
 
 function App() {
-  const [state, setState] = useState<State>("IDLE");
+  const [state, setState] = useState<State>("UPLOADED");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const dropzoneRef = useRef<HTMLDivElement>(null);
@@ -137,29 +137,31 @@ function App() {
                 <Button size="small">Download CSV</Button>
               </CSVLink>
             </Row>
-            <Spacer size={1} />
-            <StyledTable>
-              <thead>
-                <tr>
-                  {detailsDataHeaders.map((header) => (
-                    <th key={header}>{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {detailsData.map((entry) => (
-                  <tr key={entry.category}>
-                    <td>{entry.category}</td>
-                    <td
-                      dangerouslySetInnerHTML={{
-                        __html: entry.details.toString(),
-                      }}
-                    />
+            <HScroll>
+              <Spacer size={1} />
+              <StyledTable>
+                <thead>
+                  <tr>
+                    {detailsDataHeaders.map((header) => (
+                      <th key={header}>{header}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </StyledTable>
-            <Spacer size={3} />
+                </thead>
+                <tbody>
+                  {detailsData.map((entry) => (
+                    <tr key={entry.category}>
+                      <td>{entry.category}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: entry.details.toString(),
+                        }}
+                      />
+                    </tr>
+                  ))}
+                </tbody>
+              </StyledTable>
+            </HScroll>
+            <Spacer size={5} />
 
             <Row>
               <h2 style={{ width: "100%" }}>Major Concerns</h2>
@@ -167,29 +169,30 @@ function App() {
                 <Button size="small">Download CSV</Button>
               </CSVLink>
             </Row>
-            <Spacer size={1} />
-            <StyledTable>
-              <thead>
-                <tr>
-                  {majorConcernsHeaders.map((header) => (
-                    <th key={header}>{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {MOCK_DATA.majorConcerns.map((entry, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{entry.area_section}</td>
-                    <td>{entry.issue}</td>
-                    <td>{entry.recommendation}</td>
-                    <td>{entry.estimated_cost}</td>
-                    <td>{entry.report_type_and_page}</td>
+            <HScroll>
+              <Spacer size={1} />
+              <StyledTable>
+                <thead>
+                  <tr>
+                    {majorConcernsHeaders.map((header) => (
+                      <th key={header}>{header}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </StyledTable>
-
+                </thead>
+                <tbody>
+                  {MOCK_DATA.majorConcerns.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{entry.area_section}</td>
+                      <td>{entry.issue}</td>
+                      <td>{entry.recommendation}</td>
+                      <td>{entry.estimated_cost}</td>
+                      <td>{entry.report_type_and_page}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </StyledTable>
+            </HScroll>
             <Spacer size={3} />
             <Row>
               <Button onClick={scrollToDropzone}>Upload again</Button>
@@ -298,6 +301,14 @@ const StyledTable = styled.table`
   th {
     border: 1px solid #cccccc;
     padding: 8px;
+
+    // TODO: allow dynamic width based on content
+    @media (max-width: 768px) {
+      min-width: 200px;
+      &:first-child {
+        min-width: unset;
+      }
+    }
   }
 
   tr:nth-child(odd) {
@@ -322,4 +333,8 @@ const StyledTable = styled.table`
   }
 `;
 
+const HScroll = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`;
 export default App;
