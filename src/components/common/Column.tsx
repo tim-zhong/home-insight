@@ -6,6 +6,7 @@ interface Props {
 }
 
 export const Column = styled.div<Props>`
+  display: block;
   display: flex;
   flex-direction: column;
   align-items: ${(props) => props.alignItems ?? "center"};
