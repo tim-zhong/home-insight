@@ -6,9 +6,10 @@ import { Spacer } from "./components/common/Spacer";
 import { Row } from "./components/common/Row";
 import { DropzoneContent } from "./components/DropzoneContent";
 import { MOCK_DATA, State } from "./consts";
+import { CSVLink } from "react-csv";
 
 function App() {
-  const [state, setState] = useState<State>("IDLE");
+  const [state, setState] = useState<State>("UPLOADED");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const dropzoneRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,8 @@ function App() {
     },
     [selectedFiles]
   );
+  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
+    useDropzone({ onDrop: handleDrop });
 
   const handleSubmit = useCallback(() => {
     setState("UPLOADING");
@@ -41,8 +44,71 @@ function App() {
     dropzoneRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
-    useDropzone({ onDrop: handleDrop });
+  const detailsDataHeaders = ["Category", "Details"];
+  const detailsData = [
+    {
+      category: "House address",
+      details: MOCK_DATA.details["house_address"],
+    },
+    {
+      category: "Property tax",
+      details: MOCK_DATA.details["property_tax"],
+    },
+    {
+      category: "House size",
+      details: MOCK_DATA.details["house_size"],
+    },
+    {
+      category: "Lot size",
+      details: MOCK_DATA.details["lot_size"],
+    },
+    {
+      category: "Bedrooms",
+      details: MOCK_DATA.details["bedroom_numbers"],
+    },
+    {
+      category: "Bathroom",
+      details: MOCK_DATA.details["bathroom_numbers"],
+    },
+    {
+      category: "Upgrades",
+      details: MOCK_DATA.details["upgrades"].reduce((acc, curr) => {
+        return (
+          acc +
+          `- ${curr.year_of_upgrade}: ${curr.what_was_done} [permit: ${
+            curr.does_it_has_permit ? "yes" : "no"
+          }]<br />`
+        );
+      }, ""),
+    },
+  ];
+
+  const majorConcernsHeaders = [
+    "Number",
+    "Area/Section",
+    "Issue",
+    "Recommendation",
+    "Estimated Cost",
+    "Report Type",
+  ];
+
+  const detailsCsvData = [
+    [...detailsDataHeaders],
+    ...detailsData.map((entry) => [entry.category, entry.details]),
+  ];
+  const concernsCsvData = [
+    [...majorConcernsHeaders],
+    ...MOCK_DATA.majorConcerns.map((entry, index) => [
+      index + 1,
+      entry.area_section,
+      entry.issue,
+      entry.recommendation,
+      entry.estimated_cost,
+      entry.report_type_and_page,
+    ]),
+  ];
+
+  console.log(detailsCsvData);
 
   return (
     <Main>
@@ -65,43 +131,60 @@ function App() {
 
         {state === "UPLOADED" && (
           <Column ref={resultRef}>
+            <Row>
+              <h2 style={{ width: "100%" }}>Property Details</h2>
+              <CSVLink data={detailsCsvData} filename="property-details.csv">
+                <Button size="small">Download CSV</Button>
+              </CSVLink>
+            </Row>
+            <Spacer size={1} />
             <StyledTable>
               <thead>
                 <tr>
-                  <th>Category</th>
-                  <th>Details</th>
+                  {detailsDataHeaders.map((header) => (
+                    <th key={header}>{header}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {MOCK_DATA.info.map((entry) => (
+                {detailsData.map((entry) => (
                   <tr key={entry.category}>
                     <td>{entry.category}</td>
-                    <td dangerouslySetInnerHTML={{ __html: entry.details }} />
+                    <td
+                      dangerouslySetInnerHTML={{
+                        __html: entry.details.toString(),
+                      }}
+                    />
                   </tr>
                 ))}
               </tbody>
             </StyledTable>
             <Spacer size={3} />
+
+            <Row>
+              <h2 style={{ width: "100%" }}>Major Concerns</h2>
+              <CSVLink data={concernsCsvData} filename="major-concerns.csv">
+                <Button size="small">Download CSV</Button>
+              </CSVLink>
+            </Row>
+            <Spacer size={1} />
             <StyledTable>
               <thead>
                 <tr>
-                  <th>Number</th>
-                  <th>Area/Section</th>
-                  <th>Issue</th>
-                  <th>Recommendation</th>
-                  <th>Estimated Cost</th>
-                  <th>Report Type</th>
+                  {majorConcernsHeaders.map((header) => (
+                    <th key={header}>{header}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {MOCK_DATA.issues.map((entry, index) => (
-                  <tr key={entry.area}>
+                {MOCK_DATA.majorConcerns.map((entry, index) => (
+                  <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{entry.area}</td>
+                    <td>{entry.area_section}</td>
                     <td>{entry.issue}</td>
                     <td>{entry.recommendation}</td>
-                    <td>{entry.estimatedCost}</td>
-                    <td>{entry.reportType}</td>
+                    <td>{entry.estimated_cost}</td>
+                    <td>{entry.report_type_and_page}</td>
                   </tr>
                 ))}
               </tbody>
@@ -155,15 +238,14 @@ const Dropzone = styled(Column)<
   transition: border 0.24s ease-in-out;
 `;
 
-const Button = styled.button<{ disabled?: boolean }>`
-  padding: 16px 32px;
+const Button = styled.button<{ disabled?: boolean; size?: "small" | "big" }>`
+  white-space: nowrap;
   border-radius: 999px;
   border: none;
   cursor: pointer;
   transition: background-position 0.5s;
   background-size: 200% auto;
   color: white;
-  font-size: 1.2rem;
   font-weight: 600;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   background-image: linear-gradient(
@@ -176,6 +258,26 @@ const Button = styled.button<{ disabled?: boolean }>`
   &:hover {
     background-position: right center;
   }
+
+  ${(props) => {
+    switch (props.size) {
+      case "small":
+        return `
+          font-size: 0.8rem;
+          padding: 12px 16px;;
+        `;
+      case "big":
+        return `
+          font-size: 1.2rem;
+          padding: 16px 32px;
+        `;
+      default:
+        return `
+          font-size: 1.2rem;
+          padding: 16px 32px;
+        `;
+    }
+  }}
 
   ${(props) =>
     props.disabled

@@ -2163,6 +2163,13 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.7.tgz#50ae4353eaaddc04044279812f52c8c65857dbcb"
   integrity sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==
 
+"@types/react-csv@^1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@types/react-csv/-/react-csv-1.1.9.tgz#32e8e4a9cf892efa1eba061ff5007d68d05d67b9"
+  integrity sha512-DKAuokuxxR7EGdIVBafvNDvTJuq4Dn7BQpdm6JzdMGJqcC8mOdEGloZNf2umpiNgQ/3iN/yttoEvdXgM3TDZOQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^18.0.0", "@types/react-dom@^18.2.17":
   version "18.2.17"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.17.tgz#375c55fab4ae671bd98448dcfa153268d01d6f64"
@@ -7833,6 +7840,11 @@ react-app-polyfill@^3.0.0:
     raf "^3.4.1"
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
+
+react-csv@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-2.2.2.tgz#5bbf0d72a846412221a14880f294da9d6def9bfb"
+  integrity sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==
 
 react-dev-utils@^12.0.1:
   version "12.0.1"
