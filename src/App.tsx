@@ -205,7 +205,7 @@ function App() {
 }
 
 const Main = styled.div`
-  width: 98%;
+  width: calc(100% - 32px);
   margin: 0 auto;
   max-width: 1200px;
 `;
