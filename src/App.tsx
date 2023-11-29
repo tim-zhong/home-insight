@@ -9,7 +9,7 @@ import { MOCK_DATA, State } from "./consts";
 import { CSVLink } from "react-csv";
 
 function App() {
-  const [state, setState] = useState<State>("UPLOADED");
+  const [state, setState] = useState<State>("IDLE");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const dropzoneRef = useRef<HTMLDivElement>(null);
